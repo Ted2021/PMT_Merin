@@ -76,6 +76,10 @@ class PMT_Merin_sys:
         elif key == 8:
             a = 8
             print("Function is not READY...")
+        elif key == "c":
+            a = 10
+            print("Function is not READY...")
+            self.SetLit()
         p = input("Continuing? =>(y/n)")
         if p == "n":
             print("end!!")
@@ -95,10 +99,11 @@ class PMT_Merin_sys:
         print("6. Transit Time Spread")
         print("7. Afterpulse")
         print("8. Photocathod Dependency")
+        print("c. Config")
         print('q. Exit')
         print("##############################")
 
-        key = input("please enter the mode =>(1~9 or q)")
+        key = input("please enter the mode =>(1~9 or c or q)")
         if key == "q":
             print("End Process")
             #os._exit(os.EX_OK)
@@ -145,6 +150,14 @@ class PMT_Merin_sys:
     def SetHV(self):
         print("Setting HV...")
         self.hv = input("Please Check Power Supplyer and Enter HV-val ==> ")
+
+    def SetLit(self):
+        print("~~~~~ LIT setting ~~~~~~")
+        print("Single_Lit : FW {0}".format(self.SingleLit))
+        print("Multi_Lit : FW {0}".format(self.MultiLit))
+        print("AfterPulse_Lit : FW {0}".format(self.APLit))
+        print("~~~~~~~~~~~~~~~~~~~~~~~")
+
 
     def Set1PELight(self):
 
