@@ -218,8 +218,7 @@ class PMT_Merin_sys:
         input('AfterPulse Measurement Start! Please connect signal line to Function Generator! Continue?=>(y/n) ')
 
         timing = [0.0, 0.95e-6, 1.85e-6, 2.75e-6, 3.65e-5]
-        for i in range(1):
-            i = 4
+        for i in range(5):
             ChangeDelay(timing[i])
             file_name = self.date + '_' + self.pmt_serial + '_' + 'Afterpulse_{0}-{1}us'.format(i, i+1) + ".root"
             ChangeFW(self.logfile, self.APLit)
