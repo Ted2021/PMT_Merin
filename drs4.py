@@ -43,7 +43,8 @@ def RunHageFusaScript(logfile, file, tree, eventnum, serial=2386, delay = 0.0, f
     proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output_stdout = proc.stdout.read() # 標準出力の場合
     output_stderr = proc.stderr.read() # 標準エラー出力の場合
-    if output_stderr == ".......................... DAQ end":
+    #print(output_stdout)
+    if "DAQ end" in output_stdout.decode():
         print("END DAQ!")
     else:
         print("DAQ is not end correctly....")
