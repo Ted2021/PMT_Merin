@@ -1,0 +1,184 @@
+fNumberOfBoards=1 index=0 
+Found DRS4 evaluation board, serial #2386, Index 0, firmware revision 17662
+nBoards=1
+
+--- Measurement Infomation ---
+Event number : 1000
+Sampling speed : 5
+Trigger delay : 0
+------------------------------
+Initializing Board #0
+GetBoard(0)
+Init()
+Setting frequency = 5
+ZoomFactor=1
+ZoomFactor=1
+---------------------------------------2386
+DRS serial2386 -> hoge.root
+--------------------------------------------------
+Event #0 read successfully
+CanvasUpDate 112
+CanvasUpDate 120
+hage
+fNumberOfBoards=1 index=0 
+Found DRS4 evaluation board, serial #2386, Index 0, firmware revision 17662
+nBoards=1
+
+--- Measurement Infomation ---
+Event number : 1000
+Sampling speed : 5
+Trigger delay : 0
+------------------------------
+Initializing Board #0
+GetBoard(0)
+Init()
+Setting frequency = 5
+ZoomFactor=1
+ZoomFactor=1
+---------------------------------------2386
+DRS serial2386 -> hogexxxxxxx.root
+--------------------------------------------------
+Event #0 read successfully
+CanvasUpDate 112
+CanvasUpDate 120
+hage
+husahusa
+CanvasUpDate 141
+CanvasUpDate 143
+CanvasUpDate 153
+dead time =nan
+trigger time board 2386 = 0.547395 
+----------------------
+Event #400 read successfully
+CanvasUpDate 112
+CanvasUpDate 120
+hage
+husahusa
+CanvasUpDate 141
+CanvasUpDate 143
+CanvasUpDate 153
+dead time =nan
+trigger time board 2386 = 1.635417 
+----------------------
+Event #800 read successfully
+CanvasUpDate 112
+CanvasUpDate 120
+hage
+husahusa
+CanvasUpDate 141
+CanvasUpDate 143
+CanvasUpDate 153
+dead time =nan
+trigger time board 2386 = 2.707270 
+----------------------
+.......................... DAQ end 
+
+
+fNumberOfBoards=1 index=0 
+Found DRS4 evaluation board, serial #2386, Index 0, firmware revision 17662
+nBoards=1
+
+--- Measurement Infomation ---
+Event number : 1000
+Sampling speed : 5
+Trigger delay : 0
+------------------------------
+Initializing Board #0
+GetBoard(0)
+Init()
+Setting frequency = 5
+ZoomFactor=1
+ZoomFactor=1
+---------------------------------------2386
+DRS serial2386 -> hogexxxxxxx.root
+--------------------------------------------------
+Event #0 read successfully
+CanvasUpDate 112
+CanvasUpDate 120
+hage
+husahusa
+CanvasUpDate 141
+CanvasUpDate 143
+CanvasUpDate 153
+dead time =nan
+trigger time board 2386 = 0.151705 
+----------------------
+Event #400 read successfully
+CanvasUpDate 112
+CanvasUpDate 120
+hage
+husahusa
+CanvasUpDate 141
+CanvasUpDate 143
+CanvasUpDate 153
+dead time =nan
+trigger time board 2386 = 1.259584 
+----------------------
+Event #800 read successfully
+CanvasUpDate 112
+CanvasUpDate 120
+hage
+husahusa
+CanvasUpDate 141
+CanvasUpDate 143
+CanvasUpDate 153
+dead time =nan
+trigger time board 2386 = 2.331449 
+----------------------
+.......................... DAQ end 
+
+
+fNumberOfBoards=1 index=0 
+Found DRS4 evaluation board, serial #2386, Index 0, firmware revision 17662
+nBoards=1
+
+--- Measurement Infomation ---
+Event number : 1000
+Sampling speed : 5
+Trigger delay : 0
+------------------------------
+Initializing Board #0
+GetBoard(0)
+Init()
+Setting frequency = 5
+ZoomFactor=1
+ZoomFactor=1
+---------------------------------------2386
+DRS serial2386 -> hogexxxxxxx.root
+--------------------------------------------------
+Event #0 read successfully
+CanvasUpDate 112
+CanvasUpDate 120
+hage
+husahusa
+CanvasUpDate 141
+CanvasUpDate 143
+CanvasUpDate 153
+dead time =nan
+trigger time board 2386 = 0.932518 
+----------------------
+Event #400 read successfully
+CanvasUpDate 112
+CanvasUpDate 120
+hage
+husahusa
+CanvasUpDate 141
+CanvasUpDate 143
+CanvasUpDate 153
+dead time =nan
+trigger time board 2386 = 2.020322 
+----------------------
+Event #800 read successfully
+CanvasUpDate 112
+CanvasUpDate 120
+hage
+husahusa
+CanvasUpDate 141
+CanvasUpDate 143
+CanvasUpDate 153
+dead time =nan
+trigger time board 2386 = 3.092325 
+----------------------
+.......................... DAQ end 
+
+
