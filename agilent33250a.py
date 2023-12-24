@@ -3,6 +3,8 @@ import time
 import glob
 import os
 import sys
+import subprocess
+from generalfunc import *
 
 #USBのポートを参照する関数
 def get_serial_num():
@@ -10,8 +12,11 @@ def get_serial_num():
       command = 'system_profiler SPUSBDataType | grep -B 3'
       target = 'Location ID: '
       
-      stream = os.popen(command + ' ' + tnum)
-      output = stream.read()
+      #stream = os.popen(command + ' ' + tnum)
+      #output = stream.read()
+      stream = subprocess.Popen(command.split()+[tnum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)      #subprocessを用いてshellを実行
+      output = stream.stdout.read() # 標準出力の場合
+      output_stderr = stream.stderr.read() # 標準エラー出力の場合
       if tnum in output and target in output:
         if agilent in output:
            portnum.append(tnum)
