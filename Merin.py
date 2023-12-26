@@ -77,7 +77,7 @@ class PMT_Merin_sys:
     def RunMeasurement(self, key):
         if key == 1:
             a = 1
-            self.Set1PELight()
+            #self.Set1PELight()
             self.SinglePheMeasurement()
         elif key == 2:
             a = 2
