@@ -9,6 +9,7 @@ from TuneLit import *
 from agilent33250a import *
 import matplotlib.pyplot as plt
 from generalfunc import * 
+import subprocess
 #import uproot
 
 
@@ -203,6 +204,8 @@ class PMT_Merin_sys:
         RunHageFusaScript(self.logfile, singlepe_path+file_name, self.Treename_s, self.event_s, serial = self.drs4board)
         ChangeFW(self.logfile, 36)
         RunHageFusaScript(self.logfile, singlepe_path+file_name, self.Treename_d, self.event_d, serial = self.drs4board)
+        subprocess.run(["show_fig", file_name, "Tree"+self.Treename_s+"_0", "wform1-wform0", self.event_s, self.date + '_' + self.pmt_serial + '_' + 'SinglePhe_{0}V'.format(self.hv) + ".pdf"])
+        subprocess.run(["open", self.date + '_' + self.pmt_serial + '_' + 'SinglePhe_{0}V'.format(self.hv) + ".pdf"])
 
     def MultiPheMeasurement(self):
         self.SetHV()
