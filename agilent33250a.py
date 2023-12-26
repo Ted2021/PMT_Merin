@@ -18,12 +18,12 @@ def get_serial_num():
       output = stream.stdout.read() # 標準出力の場合
       output_stderr = stream.stderr.read() # 標準エラー出力の場合
       if tnum in output and target in output:
-        if agilent in output:
-           portnum.append(tnum)
-        else:
-           print("matched another device!")
-           #print("You should check the connected usb-devices and /dev/tty*")
-           #sys.exit()
+         if agilent in output:
+            portnum.append(tnum)
+         else:
+            print("matched another device!")
+            #print("You should check the connected usb-devices and /dev/tty*")
+            #sys.exit()
       else:
          print("Can't find any devices!")
          print("You should check the connected usb-devices and /dev/tty*")
@@ -40,6 +40,7 @@ def get_serial_num():
    for i in range(len(dev_list)):
       idx = dev_list[i].find('-')
       pnum = dev_list[i][idx+1:]
+      print(Color.RED+type(pnum)+Color.RESET)
       serialnum(pnum)
 
    return portnum[0]
