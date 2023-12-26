@@ -1,3 +1,4 @@
+import sys
 class Color:
 	BLACK          = '\033[30m'#(文字)黒
 	RED            = '\033[31m'#(文字)赤
@@ -22,3 +23,12 @@ class Color:
 	BG_WHITE       = '\033[47m'#(背景)白
 	BG_DEFAULT     = '\033[49m'#背景色をデフォルトに戻す
 	RESET          = '\033[0m'#全てリセット
+
+def Selection(text = "IS it OK? (y/n) "):
+	b = False
+	while b == False:
+		key = input(text)
+		if key == "y":
+			b = True
+		elif key == "n":
+			sys.exit()
