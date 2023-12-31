@@ -1,4 +1,5 @@
 from art import *
+import csv
 import sys
 import os
 import datetime
@@ -10,25 +11,25 @@ from agilent33250a import *
 import matplotlib.pyplot as plt
 from generalfunc import * 
 import subprocess
+import csv
+import shutil
 #import uproot
 
 
 class PMT_Merin_sys:    
-    def __init__(self, debug=False):
-        #デバッグモードの有無(デバッグモードの場合、ReadDRS、FilterWheel、Agilentの操作がされない)
-        if debug == False:
-            self.dummy = False
-        else:
-            self.dummy = True
+    def __init__(self, debug=False, manual=False):
 
         #パラメータの初期化
-        self.Anapath = '/Users/cta/work/dora_data/pmt'
+        self.date = "yymmdd"
+        self.pmt_serial = "XXXXXX"
+        Anapath = '/Users/cta/work/dora_data/pmt'
+        self.path = "/Users/cta/work/dora_data/pmt/{0}/{1}/".format(self.date, self.pmt_serial)
         self.drs4board = 2386
         self.SingleLit = 28     #SinglePheのFW光量
         self.MultiLit = 11      #MultiPheのFW光量
         self.APLit = 11      #AfterpulseのFW光量
-        self.Treename_s = "source"
-        self.Treename_d = "dark"
+        Treename_s = "source"
+        Treename_d = "dark"
         self.hv = 1400      #HVの初期値は1400で固定
         self.event_s = 50000    #Sourceイベント数
         self.event_d = 1000     #Darkイベント数
@@ -46,11 +47,23 @@ class PMT_Merin_sys:
                            Color.BG_DEFAULT,    #Dark_Event
                            Color.BG_DEFAULT]    #AP_Event
 
-        
+        self.logfile = self.path + "log.log"
 
-
+        #マニュアルモードの有無(マニュアルモードの場合、オブジェクトを全て自分で呼び出す必要がある)
+        if manual == False:
+            #デバッグモードの有無(デバッグモードの場合、ReadDRS、FilterWheel、Agilentの操作がされない)
+            if debug == False:
+                self.dummy = False
+                self.Call()
+            else:
+                self.dummy = True
+                self.DebugMode()
+            
+    
+    def Call(self):
         Art=text2art("PMT")
         print(Art)
+
         print("~~~ Welcome to PMT measurement System!! (v0.9) ~~~")
         b = False
         while b == False:
@@ -60,16 +73,34 @@ class PMT_Merin_sys:
             if key == "y":
                 b = True
 
-        self.date = self.GetToday()[1]
-        self.path = self.CreateDir()
+        self.date = self.GetToday()  #測定日を取得
+        self.path = self.CreateDir()    #解析データを格納するディレクトリ
+        self.logfile = self.path + "log.txt"    #測定logを格納(DRS4, FW, Triggerの動作logを書く)
+        self.CreateCSV()            #測定のセットアップをcsvに毎回dumpする
 
-        self.logfile = self.path + "log.txt"
-
-        self.Call()
-    
-    def Call(self):
-        mode = self.ShowMode()
+        #測定を開始する
+        mode = self.ShowMode()      
         self.RunMeasurement(mode)
+
+    def DebugMode(self):
+        Art=text2art("PMT")
+        print(Art)
+
+        print("~~~ Welcome to PMT measurement System!! (v0.9) " + Color.RED + "DEBUG MODE " + Color.RESET +"~~~")
+        self.date = "yymmdd"
+        self.pmt_serial = "XXXXXX"
+        self.path = "/Users/cta/work/dora_data/pmt/{0}/{1}/".format(self.date, self.pmt_serial)
+        #target_dir = 'temp'
+        shutil.rmtree(self.path)
+        os.mkdir(self.path)
+        self.logfile = self.path + "log.txt"    #測定logを格納(DRS4, FW, Triggerの動作logを書く)
+        self.CreateCSV()            #測定のセットアップをcsvに毎回dumpする
+
+        #測定を開始する
+        mode = self.ShowMode()      
+        self.RunMeasurement(mode)
+
+
 
     def RunMeasurement(self, key):
         b = False
@@ -130,13 +161,12 @@ class PMT_Merin_sys:
         JST = datetime.timezone(t_delta, 'JST')
         now = datetime.datetime.now(JST)
         Y = now.strftime('%Y%m%d')
-        y = now.strftime('%y%m%d')
+        #y = now.strftime('%y%m%d')
         #print(d) 
-        return Y, y
+        return Y
 
     def CreateDir(self, item = ''):
-        Y, y = self.GetToday()
-        dir_exsist = os.path.exists(self.Anapath+'/{0}/{1}/{2}'.format(y, self.pmt_serial, item))
+        dir_exsist = os.path.exists(Anapath+'/{0}/{1}/{2}'.format(self.date.split("20")[-1], self.pmt_serial, item))
         #print(self.Anapath+'/{0}/{1}/'.format(y, self.pmt_serial))
         if dir_exsist == True:
             print("Result Directory is Already Exsists!!")
@@ -147,9 +177,9 @@ class PMT_Merin_sys:
                 sys.exists()
             """
         else:
-            os.makedirs(self.Anapath+'/{0}/{1}/{2}'.format(y, self.pmt_serial, item))
+            os.makedirs(Anapath+'/{0}/{1}/{2}'.format(self.date.split("20")[-1], self.pmt_serial, item))
 
-        return self.Anapath+'/{0}/{1}/{2}'.format(y, self.pmt_serial, item)
+        return Anapath+'/{0}/{1}/{2}'.format(self.date.split("20")[-1], self.pmt_serial, item)
 
     def GetPmtSerial(self):
         print("PMT Serial num => {0}".format(self.pmt_serial))
@@ -286,9 +316,9 @@ class PMT_Merin_sys:
         while flag == False:
             if self.dummy == False:
                 ChangeFW(self.logfile, self.SingleLit)
-                RunHageFusaScript(self.logfile, self.path+"temp.root", self.Treename_s, 2000, serial = self.drs4board)
+                RunHageFusaScript(self.logfile, self.path+"temp.root", Treename_s, 2000, serial = self.drs4board)
                 ChangeFW(self.logfile, 36)
-                RunHageFusaScript(self.logfile, self.path+"temp.root", self.Treename_d, self.event_d, serial = self.drs4board)
+                RunHageFusaScript(self.logfile, self.path+"temp.root", Treename_d, self.event_d, serial = self.drs4board)
                 counts, rate, avg, max_bin = AnaSingleWF(self.path+"temp.root")
                 plt.plot(avg)
                 plt.show()
@@ -311,7 +341,7 @@ class PMT_Merin_sys:
                 else:
                     flag = True
             elif self.dummy == True:
-                print("Skip Measurement!!!")
+                print(Color.YELLOW+"Skip Measurement!!!"+Color.RESET)
                 print("SinglePhe Lit is set to default val")
                 flag = True
 
@@ -325,14 +355,17 @@ class PMT_Merin_sys:
 
         if self.dummy == False:
             ChangeFW(self.logfile, self.SingleLit)
-            RunHageFusaScript2(self.logfile, singlepe_path+file_name, self.Treename_s, self.event_s, serial = self.drs4board)
+            RunHageFusaScript2(self.logfile, singlepe_path+file_name, Treename_s, self.event_s, serial = self.drs4board)
             ChangeFW(self.logfile, 36)
-            RunHageFusaScript2(self.logfile, singlepe_path+file_name, self.Treename_d, self.event_d, serial = self.drs4board)
+            RunHageFusaScript2(self.logfile, singlepe_path+file_name, Treename_d, self.event_d, serial = self.drs4board)
             run_file = "/Users/cta/kiyomoto_script/lst-pmt/root_conv/Figure.py"
-            subprocess.run(["ipython", run_file, singlepe_path+file_name, "Tree"+self.Treename_s+"_0", "wform1-wform0", str(self.event_s), singlepe_path+self.date + '_' + self.pmt_serial + '_' + 'SinglePhe_{0}V'.format(self.hv)])
+            subprocess.run(["ipython", run_file, singlepe_path+file_name, "Tree"+Treename_s+"_0", "wform1-wform0", str(self.event_s), singlepe_path+self.date + '_' + self.pmt_serial + '_' + 'SinglePhe_{0}V'.format(self.hv)])
             subprocess.run(["open", singlepe_path+self.date + '_' + self.pmt_serial + '_' + 'SinglePhe_{0}V'.format(self.hv) + ".pdf"])
+
         elif self.dummy == True:
-                print("Skip Measurement!!!")
+                print(Color.YELLOW+"Skip Measurement!!!"+Color.RESET)
+
+        self.WriteCSV("SinglePhe", self.SingleLit, self.hv, file_name, self.Treename_s, self.event_s, 5.0, 850, self.drs4board)
 
     def MultiPheMeasurement(self):
         self.SetHV()
@@ -341,30 +374,35 @@ class PMT_Merin_sys:
 
         if self.dummy == False:
             ChangeFW(self.logfile, self.MultiLit)
-            RunHageFusaScript(self.logfile, multipe_path+file_name, self.Treename_s, self.event_s, serial = self.drs4board)
+            RunHageFusaScript(self.logfile, multipe_path+file_name, Treename_s, self.event_s, serial = self.drs4board)
             ChangeFW(self.logfile, 36)
-            RunHageFusaScript(self.logfile, multipe_path+file_name, self.Treename_d, self.event_d, serial = self.drs4board)
+            RunHageFusaScript(self.logfile, multipe_path+file_name, Treename_d, self.event_d, serial = self.drs4board)
             run_file = "/Users/cta/kiyomoto_script/lst-pmt/root_conv/Figure.py"
-            subprocess.run(["ipython", run_file, multipe_path+file_name, "Tree"+self.Treename_s+"_0", "wform1-wform0", str(self.event_s), multipe_path+self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(self.hv)])
+            subprocess.run(["ipython", run_file, multipe_path+file_name, "Tree"+Treename_s+"_0", "wform1-wform0", str(self.event_s), multipe_path+self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(self.hv)])
             subprocess.run(["open", multipe_path+self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(self.hv) + ".pdf"])
         elif self.dummy == True:
-                print("Skip Measurement!!!")
+                print(Color.YELLOW+"Skip Measurement!!!"+Color.RESET)
+
+        self.WriteCSV("MultiPhe", self.MultiLit, self.hv, file_name, Treename_s, self.event_s, 5.0, 850, self.drs4board)
 
     def HVGainMeasurement(self):
         multipe_path = self.CreateDir(item = 'HVGainCurve/')
         for hv in range(1400, 800, -100):
+            self.hv = hv
             input('{0}V Measurement Start! Please Check Power Supplyer! Continue?=>(y/n) '.format(hv))
             file_name = self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(hv) + ".root"
             if self.dummy == False:
                 ChangeFW(self.logfile, self.MultiLit)
-                RunHageFusaScript(self.logfile, multipe_path+file_name, self.Treename_s, self.event_s, serial = self.drs4board)
+                RunHageFusaScript(self.logfile, multipe_path+file_name, Treename_s, self.event_s, serial = self.drs4board)
                 ChangeFW(self.logfile, 36)
-                RunHageFusaScript(self.logfile, multipe_path+file_name, self.Treename_d, self.event_d, serial = self.drs4board)
+                RunHageFusaScript(self.logfile, multipe_path+file_name, Treename_d, self.event_d, serial = self.drs4board)
                 run_file = "/Users/cta/kiyomoto_script/lst-pmt/root_conv/Figure.py"
-                subprocess.run(["ipython", run_file, multipe_path+file_name, "Tree"+self.Treename_s+"_0", "wform1-wform0", str(self.event_s), multipe_path+self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(hv)])
+                subprocess.run(["ipython", run_file, multipe_path+file_name, "Tree"+Treename_s+"_0", "wform1-wform0", str(self.event_s), multipe_path+self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(hv)])
                 subprocess.run(["open", multipe_path+self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(hv) + ".pdf"])
             elif self.dummy == True:
-                print("Skip Measurement!!!")
+                print(Color.YELLOW+"Skip Measurement!!!"+Color.RESET)
+
+            self.WriteCSV("MultiPhe", self.MultiLit, self.hv, file_name, Treename_s, self.event_s, 5.0, 850, self.drs4board)
 
 
             print('{0}V Measurement Done!'.format(hv))
@@ -376,20 +414,34 @@ class PMT_Merin_sys:
 
         timing = [0.0, 0.95e-6, 1.85e-6, 2.75e-6, 3.65e-5]
         for i in range(5):
+            file_name = self.date + '_' + self.pmt_serial + '_' + 'Afterpulse_{0}-{1}us'.format(i, i+1) + ".root"
             if self.dummy == False:
                 ChangeDelay(timing[i])
-                file_name = self.date + '_' + self.pmt_serial + '_' + 'Afterpulse_{0}-{1}us'.format(i, i+1) + ".root"
                 ChangeFW(self.logfile, self.APLit)
-                RunHageFusaScript(self.logfile, afterpulse_path+file_name, self.Treename_s, self.evnet_a, serial = self.drs4board, delay = 850.0, freq= 1.0)
+                RunHageFusaScript(self.logfile, afterpulse_path+file_name, Treename_s, self.evnet_a, serial = self.drs4board, delay = 850.0, freq= 1.0)
                 ChangeFW(self.logfile, 36)
-                RunHageFusaScript(self.logfile, afterpulse_path+file_name, self.Treename_d, self.event_d, serial = self.drs4board, delay = 850.0, freq= 1.0)
+                RunHageFusaScript(self.logfile, afterpulse_path+file_name, Treename_d, self.event_d, serial = self.drs4board, delay = 850.0, freq= 1.0)
                 run_file = "/Users/cta/kiyomoto_script/lst-pmt/root_conv/Figure.py"
-                subprocess.run(["ipython", run_file, afterpulse_path+file_name, "Tree"+self.Treename_s+"_0", "wform3-wform2", str(self.event_a), afterpulse_path+self.date + '_' + self.pmt_serial + '_' + 'Afterpulse_{0}-{1}us'.format(i, i+1)])
+                subprocess.run(["ipython", run_file, afterpulse_path+file_name, "Tree"+Treename_s+"_0", "wform3-wform2", str(self.event_a), afterpulse_path+self.date + '_' + self.pmt_serial + '_' + 'Afterpulse_{0}-{1}us'.format(i, i+1)])
                 subprocess.run(["open", afterpulse_path+self.date + '_' + self.pmt_serial + '_' + 'Afterpulse_{0}-{1}us'.format(i, i+1) + ".pdf"])
             elif self.dummy == True:
-                print("Skip Measurement!!!")
+                print(Color.YELLOW+"Skip Measurement!!!"+Color.RESET)
 
+            self.WriteCSV("AfterPulse", self.APLit, self.hv, file_name, Treename_s, self.event_a, 1.0, timing[i], self.drs4board)
+
+    def CreateCSV(self):
+        with open(self.path+"{0}_MeasurementLog.csv".format(self.pmt_serial), 'w') as f:
+            writer = csv.writer(f)
+            l = ["Contents", "Lit", "HighVol", "File", "Tree", "Events", "Freq", "Delay", "DRS_serial"]
+            writer.writerow(l)
+    
+    def WriteCSV(self, contents, lit, hv, file, tree, event, freq, delay, drs_serial):
+        with open(self.path+"{0}_MeasurementLog.csv".format(self.pmt_serial), 'a') as f:
+            writer = csv.writer(f)
+            l = [contents, lit, hv, file, tree, event, freq, delay, drs_serial]
+            writer.writerow(l)
         
     
 if __name__ == "__main__":
-    hoge = PMT_Merin_sys()
+    args = sys.argv
+    hoge = PMT_Merin_sys(args[0], args[1])
