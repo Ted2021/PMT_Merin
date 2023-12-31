@@ -28,8 +28,8 @@ class PMT_Merin_sys:
         self.SingleLit = 28     #SinglePheのFW光量
         self.MultiLit = 11      #MultiPheのFW光量
         self.APLit = 11      #AfterpulseのFW光量
-        Treename_s = "source"
-        Treename_d = "dark"
+        self.Treename_s = "source"
+        self.Treename_d = "dark"
         self.hv = 1400      #HVの初期値は1400で固定
         self.event_s = 50000    #Sourceイベント数
         self.event_d = 1000     #Darkイベント数
@@ -166,7 +166,7 @@ class PMT_Merin_sys:
         return Y
 
     def CreateDir(self, item = ''):
-        dir_exsist = os.path.exists(Anapath+'/{0}/{1}/{2}'.format(self.date.split("20")[-1], self.pmt_serial, item))
+        dir_exsist = os.path.exists(self.Anapath+'/{0}/{1}/{2}'.format(self.date.split("20")[-1], self.pmt_serial, item))
         #print(self.Anapath+'/{0}/{1}/'.format(y, self.pmt_serial))
         if dir_exsist == True:
             print("Result Directory is Already Exsists!!")
@@ -177,9 +177,9 @@ class PMT_Merin_sys:
                 sys.exists()
             """
         else:
-            os.makedirs(Anapath+'/{0}/{1}/{2}'.format(self.date.split("20")[-1], self.pmt_serial, item))
+            os.makedirs(self.Anapath+'/{0}/{1}/{2}'.format(self.date.split("20")[-1], self.pmt_serial, item))
 
-        return Anapath+'/{0}/{1}/{2}'.format(self.date.split("20")[-1], self.pmt_serial, item)
+        return self.Anapath+'/{0}/{1}/{2}'.format(self.date.split("20")[-1], self.pmt_serial, item)
 
     def GetPmtSerial(self):
         print("PMT Serial num => {0}".format(self.pmt_serial))
@@ -316,9 +316,9 @@ class PMT_Merin_sys:
         while flag == False:
             if self.dummy == False:
                 ChangeFW(self.logfile, self.SingleLit)
-                RunHageFusaScript(self.logfile, self.path+"temp.root", Treename_s, 2000, serial = self.drs4board)
+                RunHageFusaScript(self.logfile, self.path+"temp.root", self.Treename_s, 2000, serial = self.drs4board)
                 ChangeFW(self.logfile, 36)
-                RunHageFusaScript(self.logfile, self.path+"temp.root", Treename_d, self.event_d, serial = self.drs4board)
+                RunHageFusaScript(self.logfile, self.path+"temp.root", self.Treename_d, self.event_d, serial = self.drs4board)
                 counts, rate, avg, max_bin = AnaSingleWF(self.path+"temp.root")
                 plt.plot(avg)
                 plt.show()
@@ -355,17 +355,17 @@ class PMT_Merin_sys:
 
         if self.dummy == False:
             ChangeFW(self.logfile, self.SingleLit)
-            RunHageFusaScript2(self.logfile, singlepe_path+file_name, Treename_s, self.event_s, serial = self.drs4board)
+            RunHageFusaScript2(self.logfile, singlepe_path+file_name, self.Treename_s, self.event_s, serial = self.drs4board)
             ChangeFW(self.logfile, 36)
-            RunHageFusaScript2(self.logfile, singlepe_path+file_name, Treename_d, self.event_d, serial = self.drs4board)
+            RunHageFusaScript2(self.logfile, singlepe_path+file_name, self.Treename_d, self.event_d, serial = self.drs4board)
             run_file = "/Users/cta/kiyomoto_script/lst-pmt/root_conv/Figure.py"
-            subprocess.run(["ipython", run_file, singlepe_path+file_name, "Tree"+Treename_s+"_0", "wform1-wform0", str(self.event_s), singlepe_path+self.date + '_' + self.pmt_serial + '_' + 'SinglePhe_{0}V'.format(self.hv)])
+            subprocess.run(["ipython", run_file, singlepe_path+file_name, "Tree"+self.Treename_s+"_0", "wform1-wform0", str(self.event_s), singlepe_path+self.date + '_' + self.pmt_serial + '_' + 'SinglePhe_{0}V'.format(self.hv)])
             subprocess.run(["open", singlepe_path+self.date + '_' + self.pmt_serial + '_' + 'SinglePhe_{0}V'.format(self.hv) + ".pdf"])
 
         elif self.dummy == True:
                 print(Color.YELLOW+"Skip Measurement!!!"+Color.RESET)
 
-        self.WriteCSV("SinglePhe", self.SingleLit, self.hv, file_name, self.Treename_s, self.event_s, 5.0, 850, self.drs4board)
+        self.WriteCSV("SinglePhe", self.SingleLit, self.hv, file_name, self.self.Treename_s, self.event_s, 5.0, 850, self.drs4board)
 
     def MultiPheMeasurement(self):
         self.SetHV()
@@ -374,16 +374,16 @@ class PMT_Merin_sys:
 
         if self.dummy == False:
             ChangeFW(self.logfile, self.MultiLit)
-            RunHageFusaScript(self.logfile, multipe_path+file_name, Treename_s, self.event_s, serial = self.drs4board)
+            RunHageFusaScript(self.logfile, multipe_path+file_name, self.Treename_s, self.event_s, serial = self.drs4board)
             ChangeFW(self.logfile, 36)
-            RunHageFusaScript(self.logfile, multipe_path+file_name, Treename_d, self.event_d, serial = self.drs4board)
+            RunHageFusaScript(self.logfile, multipe_path+file_name, self.Treename_d, self.event_d, serial = self.drs4board)
             run_file = "/Users/cta/kiyomoto_script/lst-pmt/root_conv/Figure.py"
-            subprocess.run(["ipython", run_file, multipe_path+file_name, "Tree"+Treename_s+"_0", "wform1-wform0", str(self.event_s), multipe_path+self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(self.hv)])
+            subprocess.run(["ipython", run_file, multipe_path+file_name, "Tree"+self.Treename_s+"_0", "wform1-wform0", str(self.event_s), multipe_path+self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(self.hv)])
             subprocess.run(["open", multipe_path+self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(self.hv) + ".pdf"])
         elif self.dummy == True:
                 print(Color.YELLOW+"Skip Measurement!!!"+Color.RESET)
 
-        self.WriteCSV("MultiPhe", self.MultiLit, self.hv, file_name, Treename_s, self.event_s, 5.0, 850, self.drs4board)
+        self.WriteCSV("MultiPhe", self.MultiLit, self.hv, file_name, self.Treename_s, self.event_s, 5.0, 850, self.drs4board)
 
     def HVGainMeasurement(self):
         multipe_path = self.CreateDir(item = 'HVGainCurve/')
@@ -393,16 +393,16 @@ class PMT_Merin_sys:
             file_name = self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(hv) + ".root"
             if self.dummy == False:
                 ChangeFW(self.logfile, self.MultiLit)
-                RunHageFusaScript(self.logfile, multipe_path+file_name, Treename_s, self.event_s, serial = self.drs4board)
+                RunHageFusaScript(self.logfile, multipe_path+file_name, self.Treename_s, self.event_s, serial = self.drs4board)
                 ChangeFW(self.logfile, 36)
-                RunHageFusaScript(self.logfile, multipe_path+file_name, Treename_d, self.event_d, serial = self.drs4board)
+                RunHageFusaScript(self.logfile, multipe_path+file_name, self.Treename_d, self.event_d, serial = self.drs4board)
                 run_file = "/Users/cta/kiyomoto_script/lst-pmt/root_conv/Figure.py"
-                subprocess.run(["ipython", run_file, multipe_path+file_name, "Tree"+Treename_s+"_0", "wform1-wform0", str(self.event_s), multipe_path+self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(hv)])
+                subprocess.run(["ipython", run_file, multipe_path+file_name, "Tree"+self.Treename_s+"_0", "wform1-wform0", str(self.event_s), multipe_path+self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(hv)])
                 subprocess.run(["open", multipe_path+self.date + '_' + self.pmt_serial + '_' + 'MultiPhe_{0}V'.format(hv) + ".pdf"])
             elif self.dummy == True:
                 print(Color.YELLOW+"Skip Measurement!!!"+Color.RESET)
 
-            self.WriteCSV("MultiPhe", self.MultiLit, self.hv, file_name, Treename_s, self.event_s, 5.0, 850, self.drs4board)
+            self.WriteCSV("MultiPhe", self.MultiLit, self.hv, file_name, self.Treename_s, self.event_s, 5.0, 850, self.drs4board)
 
 
             print('{0}V Measurement Done!'.format(hv))
@@ -418,16 +418,16 @@ class PMT_Merin_sys:
             if self.dummy == False:
                 ChangeDelay(timing[i])
                 ChangeFW(self.logfile, self.APLit)
-                RunHageFusaScript(self.logfile, afterpulse_path+file_name, Treename_s, self.evnet_a, serial = self.drs4board, delay = 850.0, freq= 1.0)
+                RunHageFusaScript(self.logfile, afterpulse_path+file_name, self.Treename_s, self.evnet_a, serial = self.drs4board, delay = 850.0, freq= 1.0)
                 ChangeFW(self.logfile, 36)
-                RunHageFusaScript(self.logfile, afterpulse_path+file_name, Treename_d, self.event_d, serial = self.drs4board, delay = 850.0, freq= 1.0)
+                RunHageFusaScript(self.logfile, afterpulse_path+file_name, self.Treename_d, self.event_d, serial = self.drs4board, delay = 850.0, freq= 1.0)
                 run_file = "/Users/cta/kiyomoto_script/lst-pmt/root_conv/Figure.py"
-                subprocess.run(["ipython", run_file, afterpulse_path+file_name, "Tree"+Treename_s+"_0", "wform3-wform2", str(self.event_a), afterpulse_path+self.date + '_' + self.pmt_serial + '_' + 'Afterpulse_{0}-{1}us'.format(i, i+1)])
+                subprocess.run(["ipython", run_file, afterpulse_path+file_name, "Tree"+self.Treename_s+"_0", "wform3-wform2", str(self.event_a), afterpulse_path+self.date + '_' + self.pmt_serial + '_' + 'Afterpulse_{0}-{1}us'.format(i, i+1)])
                 subprocess.run(["open", afterpulse_path+self.date + '_' + self.pmt_serial + '_' + 'Afterpulse_{0}-{1}us'.format(i, i+1) + ".pdf"])
             elif self.dummy == True:
                 print(Color.YELLOW+"Skip Measurement!!!"+Color.RESET)
 
-            self.WriteCSV("AfterPulse", self.APLit, self.hv, file_name, Treename_s, self.event_a, 1.0, timing[i], self.drs4board)
+            self.WriteCSV("AfterPulse", self.APLit, self.hv, file_name, self.Treename_s, self.event_a, 1.0, timing[i], self.drs4board)
 
     def CreateCSV(self):
         with open(self.path+"{0}_MeasurementLog.csv".format(self.pmt_serial), 'w') as f:
