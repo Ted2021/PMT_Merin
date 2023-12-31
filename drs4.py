@@ -6,13 +6,13 @@ import threading
 from generalfunc import *
 
 #DRS4の操作
-def RunHageFusaScript2(logfile, file, tree, eventnum, serial=2386, delay = 0.0, freq=5.0):
+def RunHageFusaScript2(logfile, file, tree, eventnum, serial=2386, index = 0, delay = 0.0, freq=5.0):
     READDrs4_path = '/Users/cta/Software/JustReadDrs4_Sunada_20210408/ReadDrs4'
     try:
         print("Run ReadDrs4!")
         #print(READDrs4_path, "-s", "{0}".format(serial), "-i", "0", '-f', "{0}".format(freq), "-d", "{0}".format(delay), "-e", "{0}".format(eventnum), "-m", "{0}".format(tree), "-n", "0", "-0", "{0}".format(file))
         with open(logfile, "a") as fp:
-            subprocess.call([READDrs4_path, "-s", "{0}".format(serial), "-i", "0", '-f', "{0}".format(freq), "-d", "{0}".format(delay), "-e", "{0}".format(eventnum), "-m", "{0}".format(tree), "-n", "0", "-0", "{0}".format(file)], stdout=fp)
+            subprocess.call([READDrs4_path, "-s", "{0}".format(serial), "-i", "{0}".format(index), '-f', "{0}".format(freq), "-d", "{0}".format(delay), "-e", "{0}".format(eventnum), "-m", "{0}".format(tree), "-n", "0", "-0", "{0}".format(file)], stdout=fp)
     except:
         print("ERROR with DRS4!")
 
