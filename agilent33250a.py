@@ -57,3 +57,36 @@ def ChangeDelay(delaytime):
     time.sleep(2)
     ser.close()
     print("Trigger Delay time => {0}".format(delaytime))
+
+
+# Change Delay singnal (※THIS OPERATION MAY MAKE BAD EFFECT TO OTHER INSTRUMENTS!! SO Please be Carefull!!※)
+def ChangeDelay_Manual(delaytime, portnum=1430):
+    #portnum = get_serial_num()
+    ser = serial.Serial("/dev/tty.usbserial-{0}".format(portnum),57600,timeout=1)
+    time.sleep(2)
+    ser.write(b"OUTPUT OFF\n")
+    ser.write(b"*IDN?\n");ser.readline()
+    ser.write(b"TRIGger:DELay "+ str(delaytime).encode() +b"\n")
+    time.sleep(2)
+    ser.write(b"OUTPUT ON\n")
+    time.sleep(2)
+    ser.close()
+    print("Trigger Delay time => {0}".format(delaytime))
+
+def Output_off(portnum=1430):
+    #portnum = get_serial_num()
+    ser = serial.Serial("/dev/tty.usbserial-{0}".format(portnum),57600,timeout=1)
+    time.sleep(1)
+    ser.write(b"OUTPUT OFF\n")
+    #time.sleep(2)
+    ser.close()
+    print("Outout OFF!")
+
+def Output_on(portnum=1430):
+    #portnum = get_serial_num()
+    ser = serial.Serial("/dev/tty.usbserial-{0}".format(portnum),57600,timeout=1)
+    time.sleep(1)
+    ser.write(b"OUTPUT ON\n")
+    #time.sleep(2)
+    ser.close()
+    print("Outout ON!")
