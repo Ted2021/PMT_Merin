@@ -417,9 +417,9 @@ class PMT_Merin_sys:
         for i in range(5):
             file_name = self.date + '_' + self.pmt_serial + '_' + 'Afterpulse_{0}-{1}us'.format(i, i+1) + ".root"
             if self.dummy == False:
-                ChangeDelay(timing[i])
+                ChangeDelay_Manual(timing[i])
                 ChangeFW(self.logfile, self.APLit)
-                RunHageFusaScript(self.logfile, afterpulse_path+file_name, self.Treename_s, self.evnet_a, serial = self.drs4board, delay = 850.0, freq= 1.0)
+                RunHageFusaScript(self.logfile, afterpulse_path+file_name, self.Treename_s, self.event_a, serial = self.drs4board, delay = 850.0, freq= 1.0)
                 ChangeFW(self.logfile, 36)
                 RunHageFusaScript(self.logfile, afterpulse_path+file_name, self.Treename_d, self.event_d, serial = self.drs4board, delay = 850.0, freq= 1.0)
                 run_file = "/Users/cta/kiyomoto_script/lst-pmt/root_conv/Figure.py"
