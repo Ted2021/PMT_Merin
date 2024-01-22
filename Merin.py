@@ -22,7 +22,7 @@ class PMT_Merin_sys:
         #パラメータの初期化
         self.date = "yymmdd"
         self.pmt_serial = "XXXXXX"
-        Anapath = '/Users/cta/work/dora_data/pmt'
+        self.Anapath = '/Users/cta/work/dora_data/pmt'
         self.path = "/Users/cta/work/dora_data/pmt/{0}/{1}/".format(self.date, self.pmt_serial)
         self.drs4board = 2386
         self.SingleLit = 28     #SinglePheのFW光量
