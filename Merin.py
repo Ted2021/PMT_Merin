@@ -365,7 +365,7 @@ class PMT_Merin_sys:
         elif self.dummy == True:
                 print(Color.YELLOW+"Skip Measurement!!!"+Color.RESET)
 
-        self.WriteCSV("SinglePhe", self.SingleLit, self.hv, file_name, self.self.Treename_s, self.event_s, 5.0, 850, self.drs4board)
+        self.WriteCSV("SinglePhe", self.SingleLit, self.hv, file_name, self.Treename_s, self.event_s, 5.0, 850, self.drs4board)
 
     def MultiPheMeasurement(self):
         self.SetHV()
@@ -409,7 +409,8 @@ class PMT_Merin_sys:
         print("End HV-Gain Measurement")
 
     def AfterPulseMeasurement(self):
-        afterpulse_path = self.CreateDir(item = 'Afterpulse/')
+        self.SetHV()
+        afterpulse_path = self.CreateDir(item = 'Afterpulse_{0}/'.format(self.hv))
         input('AfterPulse Measurement Start! Please connect signal line to Function Generator! Continue?=>(y/n) ')
 
         timing = [0.0, 0.95e-6, 1.85e-6, 2.75e-6, 3.65e-5]
